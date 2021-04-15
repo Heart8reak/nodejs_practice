@@ -1,12 +1,8 @@
-const { createReadStream } = require('fs')
+const http = require('http') 
 
-const stream = createReadStream('./content/big.txt', { highWaterMark: 90000, encoding: 'utf8' })
-
-// default 64kb
-// last buffer - remainder
-// highWaterMark - control size
-
-stream.on('data', (result) => {
-    console.log(result);
+const server = http.createServer((req, res) => {
+    console.log('User hit the Server! :-)');
+    res.end('<h1>Home Page</h1>')
 })
-stream.on('error', (err) => console.log(err))
+
+server.listen(5000)
