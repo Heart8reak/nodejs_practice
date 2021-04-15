@@ -1,13 +1,12 @@
-const EventEmitter = require('events') 
+const { createReadStream } = require('fs')
 
-const customEmitter = new EventEmitter() 
+const stream = createReadStream('./content/big.txt', { highWaterMark: 90000, encoding: 'utf8' })
 
-customEmitter.on('response', (name, id) => {
-    console.log(`data received user ${name} with id ${id}`);
+// default 64kb
+// last buffer - remainder
+// highWaterMark - control size
+
+stream.on('data', (result) => {
+    console.log(result);
 })
-
-customEmitter.on('response', () => {
-    console.log(`some other logic here! `);
-})
-
-customEmitter.emit('response', 'Calvin', 23)
+stream.on('error', (err) => console.log(err))
