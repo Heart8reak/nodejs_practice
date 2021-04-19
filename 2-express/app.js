@@ -1,37 +1,33 @@
 const express = require('express')
-const app = express()
-const { products } =require('./data')
+const app = express() 
+const logger = require('../logger')
+const authorize = require('../authorize')
+
+// req => middlewate => 
+app.use([logger, authorize])
 
 
 app.get('/', (req, res) => {
-    res.send('<h1>Home Page</h1><a href="/api/products">products</a>')
+    res.send('Home')
+})
+
+app.get('/about', (req, res) => {
+    res.send('About')
+})
+
+app.get('/contact', (req, res) => {
+    res.send('Contact')
 })
 
 app.get('/api/products', (req, res) => {
-    const newProducts = products.map((product) => {
-        const { id, name, image } = product 
-        return {id, name, image}
-    })
-    res.json(newProducts)
+    res.send('Products')
 })
 
-app.get('/api/products/:productID', (req, res) => {
-    // console.log(req);
-    // console.log(req.params);
-    const { productID } = req.params
-
-    const singleProduct = products.find((product) => product.id === Number(productID))
-    if (!singleProduct) {
-        return res.status(404).send('Product Does Not Exist!')
-    }
-    res.json(singleProduct)
+app.get('/api/items', (req, res) => {
+    console.log(req.user);
+    res.send('Items')
 })
 
-app.get('/api/products/:productID/reviews/:reviewID', (req, res) => {
-    console.log(req.params);
-    res.send('Hello World')
-})
-
-app.listen(5000, (req, res) => {
-    console.log('\nServer is listening on port 5000...\n');
+app.listen(5000, () => {
+    console.log('\nServer is up and Running!\n');
 })
