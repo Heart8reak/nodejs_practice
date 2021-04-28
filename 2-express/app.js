@@ -1,33 +1,44 @@
 const express = require('express')
-const app = express() 
-const logger = require('../logger')
-const authorize = require('../authorize')
+const app = express()
+let { people } = require('./data')
 
-// req => middlewate => 
-app.use([logger, authorize])
+// static asset
+app.use(express.static('./methods-public'))
+// parse form data 
+app.use(express.urlencoded({ extended: false }))
+// parse json
+app.use(express.json())
 
+// ####################
+// GET
+// ####################
 
-app.get('/', (req, res) => {
-    res.send('Home')
+app.get('/api/people', (req, res) => {
+    res.status(200).json({ succes: true, data: people })
 })
 
-app.get('/about', (req, res) => {
-    res.send('About')
+// ####################
+// POST
+// ####################
+
+app.post('/javascript.html/api/people', (req, res) => {
+    const { name } = req.body
+    if (!name) {
+        return res.status(400).json({ success: false, msg: 'Please provide name value' })
+    }
+    res.status(201).send({ success: true, person: name })
 })
 
-app.get('/contact', (req, res) => {
-    res.send('Contact')
-})
-
-app.get('/api/products', (req, res) => {
-    res.send('Products')
-})
-
-app.get('/api/items', (req, res) => {
-    console.log(req.user);
-    res.send('Items')
+app.post('/login', (req, res) => {
+    console.log(req.body);
+    const { name } = req.body
+    if (name) {
+        return res.status(200).send(`Welcome ${name}`)
+    }
+    res.status(401).send('Please Provide Credentials!')
+    res.send('POST')
 })
 
 app.listen(5000, () => {
-    console.log('\nServer is up and Running!\n');
+    console.log('\n##### Server is up and Running! #####\n');
 })
